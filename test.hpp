@@ -4,7 +4,8 @@ namespace Suite {
     class Tests {
         public:
             Tests(Emulator::Chip8 _cpu);
-        
+
+            void ClearRegisters();
             void chip8InitTest();
             void OP_00E0_Test();
             void OP_00E0_Test();
