@@ -57,5 +57,9 @@ namespace Emulator {
             uint16_t opcode;
             std::default_random_engine randGen;
             std::uniform_int_distribution<uint8_t> randByte;
+        
+        private:
+            int VIDEO_WIDTH;
+            int VIDEO_HEIGHT;
     };
 }

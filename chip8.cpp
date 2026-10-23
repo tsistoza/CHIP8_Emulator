@@ -27,6 +27,8 @@ const uint8_t fontset[FONTSET_SIZE] = { // Each row represents a character --> 1
 	0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
+const int _VIDEO_WIDTH = 64;
+const int _VIDEO_HEIGHT = 32;
 namespace Emulator {
     Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().count()) { // Initialize RandGen
         pc = START_ADDRESS;
@@ -34,7 +36,8 @@ namespace Emulator {
         // Load Fonts into memory
         for (unsigned int i=0; i<FONTSET_SIZE; i++)
             memory[FONTSET_START_ADDRESS + i] = fontset[i];
-
+        VIDEO_WIDTH = _VIDEO_WIDTH;
+        VIDEO_HEIGHT = _VIDEO_HEIGHT;
         randByte = std::uniform_int_distribution<uint8_t>(0, 255U);
     }
 
@@ -198,7 +201,27 @@ namespace Emulator {
     }
 
     void Chip8::OP_Dxyn() {
-        uint8_t nibble = static_cast<uint8_t>((opcode & 0x000Fu));
-        
+        uint8_t height = static_cast<uint8_t>((opcode & 0x000Fu));
+        uint8_t Vx = static_cast<uint8_t>(((opcode & 0x0F00u) >> 8u));
+        uint8_t Vy = static_cast<uint8_t>(((opcode & 0x00F0u) >> 4u));
+
+        uint8_t xPos = registers[Vx] % VIDEO_WIDTH;
+        uint8_t yPos = registers[Vy] % VIDEO_HEIGHT;
+
+        registers[0xF] = 0;
+
+        for (unsigned int i=0; i<height; i++) {
+            uint8_t spriteByte = memory[index + i];
+
+            for (unsigned int j=0; j<8; j++) {
+                uint8_t spritePixel = spriteByte & (0x80u >> j);
+                uint32_t* screenPixel = &video[(yPos + i) * VIDEO_WIDTH + (xPos + j)];
+
+                if (spritePixel) {
+                    if (*screenPixel == 0xFFFFFFFF) registers[0xF] = 1;
+                    *screenPixel ^= 0xFFFFFFFF;
+                }
+            }
+        }
     }
 }
