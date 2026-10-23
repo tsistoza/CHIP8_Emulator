@@ -71,53 +71,54 @@ namespace Emulator {
     }
 
     void Chip8::OP_00EE() {
-        pc = stack[sp--];
+        sp--;
+        pc = stack[sp];
     }
 
     void Chip8::OP_1nnn() {
-        uint16_t address = opcode & 0x0FFF;
+        uint16_t address = opcode & 0x0FFFu;
         pc = address;
     }
 
     void Chip8::OP_2nnn() {
         stack[sp++] = pc;
-        uint16_t address = opcode & 0x0FFF;
+        uint16_t address = opcode & 0x0FFFu;
         pc = address;
     }
 
     void Chip8::OP_3xkk() {
-        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00) >> 8);
-        uint8_t kk = static_cast<uint8_t>(opcode & 0x00FF);
-        if (Vx == kk) pc += 2;
+        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00u) >> 8u);
+        uint8_t kk = static_cast<uint8_t>(opcode & 0x00FFu);
+        if (registers[Vx] == kk) pc += 2;
     }
 
     void Chip8::OP_4xkk() {
-        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00) >> 8);
-        uint8_t kk = static_cast<uint8_t>(opcode & 0x00FF);
-        if (Vx != kk) pc += 2;
+        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00u) >> 8);
+        uint8_t kk = static_cast<uint8_t>(opcode & 0x00FFu);
+        if (registers[Vx] != kk) pc += 2;
     }
 
     void Chip8::OP_5xy0() {
-        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00) >> 8);
-        uint8_t Vy = static_cast<uint8_t>((opcode & 0x00F0) >> 4);
-        if (Vx == Vy) pc += 2;
+        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00u) >> 8);
+        uint8_t Vy = static_cast<uint8_t>((opcode & 0x00F0u) >> 4u);
+        if (registers[Vx] == registers[Vy]) pc += 2;
     }
 
     void Chip8::OP_6xkk() {
         uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00) >> 8);
-        uint8_t kk = static_cast<uint8_t>(opcode & 0x00FF);
+        uint8_t kk = static_cast<uint8_t>(opcode & 0x00FFu);
         registers[Vx] = kk;
     }
 
     void Chip8::OP_7xkk() {
-        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00) >> 8);
-        uint8_t kk = static_cast<uint8_t>(opcode * 0x00FF);
+        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00u) >> 8u);
+        uint8_t kk = static_cast<uint8_t>(opcode & 0x00FFu);
         registers[Vx] += kk;
     }
 
     void Chip8::OP_8xy0() {
-        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00) >> 8);
-        uint8_t Vy = static_cast<uint8_t>((opcode & 0x00F0) >> 4);
+        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00u) >> 8u);
+        uint8_t Vy = static_cast<uint8_t>((opcode & 0x00F0u) >> 4u);
         registers[Vx] = registers[Vy];
     }
 
@@ -140,10 +141,11 @@ namespace Emulator {
     }
 
     void Chip8::OP_8xy4() {
-        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00) >> 8);
-        uint8_t Vy = static_cast<uint8_t>((opcode & 0x00F0) >> 4);
-        if (registers[Vx] + registers[Vy] > 255) registers[0xF] = 1; 
-        registers[Vx] += registers[Vy];
+        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00u) >> 8u);
+        uint8_t Vy = static_cast<uint8_t>((opcode & 0x00F0u) >> 4u);
+        uint16_t sum = registers[Vx] + registers[Vy];
+        registers[0xF] = (sum > 255) ? 1 : 0;
+        registers[Vx] = sum & 0xFFu;
     }
 
     void Chip8::OP_8xy5() {
@@ -155,48 +157,48 @@ namespace Emulator {
 
     void Chip8::OP_8xy6() {
         uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00) >> 8);
-        registers[0xF] = (registers[Vx] & 0x0001 == 1) ? 1 : 0;
-        registers[Vx] /= 2;
+        registers[0xF] = (registers[Vx] & 0x1u);
+        registers[Vx] >>= 1;
     }
 
     void Chip8::OP_8xy7() {
-        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00) >> 8);
-        uint8_t Vy = static_cast<uint8_t>((opcode & 0x00F0) >> 4);
+        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00u) >> 8u);
+        uint8_t Vy = static_cast<uint8_t>((opcode & 0x00F0u) >> 4u);
         registers[0xF] = (registers[Vy] > registers[Vx]) ? 1 : 0;
         registers[Vx] = registers[Vy] - registers[Vx];
     }
 
     void Chip8::OP_8xyE() {
         uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00) >> 8);
-        registers[0xF] = (((registers[Vx] & 0x8000) >> 7) == 1) ? 1 : 0;
-        registers[Vx] *= 2;
+        registers[0xF] = ((registers[Vx] & 0x80u) >> 7u);
+        registers[Vx] <<= 1;
     }
 
     void Chip8::OP_9xy0() {
-        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00) >> 8);
-        uint8_t Vy = static_cast<uint8_t>((opcode & 0x00F0) >> 4);
+        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00u) >> 8u);
+        uint8_t Vy = static_cast<uint8_t>((opcode & 0x00F0u) >> 4u);
         if (registers[Vx] != registers[Vy]) pc += 2;
     }
 
     void Chip8::OP_Annn() {
-        uint16_t address = (opcode & 0x0FFF);
+        uint16_t address = (opcode & 0x0FFFu);
         index = address;
     }
 
     void Chip8::OP_Bnnn() {
-        uint16_t address = (opcode & 0x0FFF);
+        uint16_t address = (opcode & 0x0FFFu);
         pc = address + registers[0x0];
     }
 
     void Chip8::OP_Cxkk() {
         uint8_t random = randByte(randGen);
-        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00) >> 8);
-        uint8_t kk = static_cast<uint8_t>(opcode * 0x00FF);
+        uint8_t Vx = static_cast<uint8_t>((opcode & 0x0F00u) >> 8u);
+        uint8_t kk = static_cast<uint8_t>(opcode & 0x00FFu);
         registers[Vx] = random & kk;
     }
 
     void Chip8::OP_Dxyn() {
-        uint8_t nibble = static_cast<uint8_t>((opcode & 0x000F));
+        uint8_t nibble = static_cast<uint8_t>((opcode & 0x000Fu));
         
     }
 }
