@@ -1,4 +1,7 @@
 #include <cstdint>
+#include <random>
+#include <functional>
+#include <array>
 
 namespace Emulator {
     class Chip8 {
@@ -36,12 +39,14 @@ namespace Emulator {
             void OP_ExA1();
             void OP_Fx07();
             void OP_Fx0A();
+            void OP_Fx15();
             void OP_Fx18();
             void OP_Fx1E();
             void OP_Fx29();
             void OP_Fx33();
             void OP_Fx55();
             void OP_Fx65();
+            void OP_NULL();
 
             // Hardware
             uint8_t registers[16]{};
@@ -57,6 +62,11 @@ namespace Emulator {
             uint16_t opcode;
             std::default_random_engine randGen;
             std::uniform_int_distribution<uint8_t> randByte;
+            std::array<void(Emulator::Chip8::*)(), 0xF+1> table;
+            std::array<void(Emulator::Chip8::*)(), 0xE+1> table0;
+            std::array<void(Emulator::Chip8::*)(), 0xE+1> table8;
+            std::array<void(Emulator::Chip8::*)(), 0xE+1> tableE;
+            std::array<void(Emulator::Chip8::*)(), 0xF+1> tableF;
         
         private:
             int VIDEO_WIDTH;
