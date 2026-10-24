@@ -3,7 +3,7 @@
 namespace Suite {
     class Tests {
         public:
-            Tests(Emulator::Chip8 _cpu);
+            Tests(Emulator::Chip8*_cpu);
 
             void ClearRegisters();
             void chip8InitTest();
@@ -35,6 +35,7 @@ namespace Suite {
             void OP_ExA1_Test();
             void OP_Fx07_Test();
             void OP_Fx0A_Test();
+            void OP_Fx15_Test();
             void OP_Fx18_Test();
             void OP_Fx1E_Test();
             void OP_Fx29_Test();
@@ -42,6 +43,6 @@ namespace Suite {
             void OP_Fx55_Test();
             void OP_Fx65_Test();
         private:
-            Emulator::Chip8 cpu;
+            Emulator::Chip8* cpu;
     };
 }
