@@ -1,13 +1,14 @@
 #include "chip8.hpp"
+#include <array>
 
 namespace Suite {
     class Tests {
         public:
             Tests(Emulator::Chip8*_cpu);
 
+            void startInstructionTest();
             void ClearRegisters();
-            void chip8InitTest();
-            void OP_00E0_Test();
+            void chip8InitTest(); // 34 Instructions + 1
             void OP_00E0_Test();
             void OP_00EE_Test();
             void OP_1nnn_Test();
@@ -42,6 +43,7 @@ namespace Suite {
             void OP_Fx33_Test();
             void OP_Fx55_Test();
             void OP_Fx65_Test();
+        
         private:
             Emulator::Chip8* cpu;
     };

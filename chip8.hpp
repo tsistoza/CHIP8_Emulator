@@ -62,11 +62,11 @@ namespace Emulator {
             uint16_t opcode;
             std::default_random_engine randGen;
             std::uniform_int_distribution<uint8_t> randByte;
-            std::array<void(Emulator::Chip8::*)(), 0xF+1> table;
-            std::array<void(Emulator::Chip8::*)(), 0xE+1> table0;
-            std::array<void(Emulator::Chip8::*)(), 0xE+1> table8;
-            std::array<void(Emulator::Chip8::*)(), 0xE+1> tableE;
-            std::array<void(Emulator::Chip8::*)(), 0xF+1> tableF;
+            std::array<void(Emulator::Chip8::*)(), 0xFu+1u> table;
+            std::array<void(Emulator::Chip8::*)(), 0xEu+1u> table0;
+            std::array<void(Emulator::Chip8::*)(), 0xEu+1u> table8;
+            std::array<void(Emulator::Chip8::*)(), 0xEu+1u> tableE;
+            std::array<void(Emulator::Chip8::*)(), 0xFu+1u> tableF;
         
         private:
             int VIDEO_WIDTH;
