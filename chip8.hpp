@@ -48,6 +48,13 @@ namespace Emulator {
             void OP_Fx65();
             void OP_NULL();
 
+            void Table0();
+            void Table8();
+            void TableE();
+            void TableF();
+
+            void cycle();
+
             // Hardware
             uint8_t registers[16]{};
             uint8_t memory[4096]{};
@@ -66,7 +73,7 @@ namespace Emulator {
             std::array<void(Emulator::Chip8::*)(), 0xEu+1u> table0;
             std::array<void(Emulator::Chip8::*)(), 0xEu+1u> table8;
             std::array<void(Emulator::Chip8::*)(), 0xEu+1u> tableE;
-            std::array<void(Emulator::Chip8::*)(), 0xFu+1u> tableF;
+            std::array<void(Emulator::Chip8::*)(), 0x65u+1u> tableF;
         
         private:
             int VIDEO_WIDTH;

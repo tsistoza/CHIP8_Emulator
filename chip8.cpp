@@ -44,6 +44,49 @@ namespace Emulator {
         table8.fill(OP_NULL);
         tableE.fill(OP_NULL);
         tableF.fill(OP_NULL);
+
+        table[0x0] = &Table0;
+        table[0x1] = &OP_1nnn;
+        table[0x2] = &OP_2nnn;
+        table[0x3] = &OP_3xkk;
+        table[0x4] = &OP_4xkk;
+        table[0x5] = &OP_5xy0;
+        table[0x6] = &OP_6xkk;
+        table[0x7] = &OP_7xkk;
+        table[0x8] = &Table8;
+        table[0x9] = &OP_9xy0;
+        table[0xA] = &OP_Annn;
+        table[0xB] = &OP_Bnnn;
+        table[0xC] = &OP_Cxkk;
+        table[0xD] = &OP_Dxyn;
+        table[0xE] = &TableE;
+        table[0xF] = &TableF;
+
+        table0[0x0] = &OP_00E0;
+        table0[0xE] = &OP_00EE;
+        
+        table8[0x0] = &OP_8xy0;
+        table8[0x1] = &OP_8xy1;
+        table8[0x2] = &OP_8xy2;
+        table8[0x3] = &OP_8xy3;
+        table8[0x4] = &OP_8xy4;
+        table8[0x5] = &OP_8xy5;
+        table8[0x6] = &OP_8xy6;
+        table8[0x7] = &OP_8xy7;
+        table8[0xE] = &OP_8xyE;
+
+        tableE[0x1] = &OP_ExA1;
+        tableE[0xE] = &OP_Ex9E;
+
+        tableF[0x07] = &OP_Fx07;
+        tableF[0x0A] = &OP_Fx0A;
+        tableF[0x15] = &OP_Fx15;
+        tableF[0x18] = &OP_Fx18;
+        tableF[0x1E] = &OP_Fx1E;
+        tableF[0x29] = &OP_Fx29;
+        tableF[0x33] = &OP_Fx33;
+        tableF[0x55] = &OP_Fx55;
+        tableF[0x65] = &OP_Fx65;
     }
 
     Chip8::~Chip8() {
@@ -313,4 +356,29 @@ namespace Emulator {
     }
 
     void Chip8::OP_NULL() {}
+
+    void Chip8::Table0() {
+        (this->*table0[opcode & 0x000Fu])();
+        
+    }
+
+    void Chip8::Table8() {
+        (this->*table8[opcode & 0x000Fu])();
+    }
+
+    void Chip8::TableE() {
+        (this->*tableE[opcode& 0x000Fu])();
+    }
+
+    void Chip8::TableF() {
+        (this->*tableF[opcode & 0x00FFu])();
+    }
+
+    void Chip8::cycle() {
+        opcode = (memory[pc] << 8u) | memory[pc + 1];
+        pc += 2;
+        (this->*table[(opcode & 0xF000u) >> 12u])();
+        if (delayTimer > 0) delayTimer--;
+        if (soundTimer > 0) soundTimer--;
+    }
 }
