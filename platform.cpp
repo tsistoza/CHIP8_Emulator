@@ -4,7 +4,7 @@ namespace Layer {
     Platform::Platform(const char* title, int windowWidth, int windowHeight, int textureWidth, int textureHeight) {
         SDL_Init(SDL_INIT_VIDEO);
         window = SDL_CreateWindow(title, windowWidth, windowHeight, 0);
-        renderer = SDL_CreateRenderer(window, title);
+        renderer = SDL_CreateRenderer(window, NULL);
         texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, textureWidth, textureHeight);
     }
     
