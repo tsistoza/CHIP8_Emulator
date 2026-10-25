@@ -1,4 +1,5 @@
 #include "chip8.hpp"
+#include <iostream>
 #include <fstream>
 #include <ios>
 #include <random>
