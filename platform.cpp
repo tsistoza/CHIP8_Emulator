@@ -1,4 +1,4 @@
-#include "platform.hpp"
+#include <platform.hpp>
 
 namespace Layer {
     Platform::Platform(const char* title, int windowWidth, int windowHeight, int textureWidth, int textureHeight) {

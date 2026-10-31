@@ -1,0 +1,28 @@
+{
+    "version": 4,
+    "configurePresets": [
+        {
+            "name": "buildProject",
+            "displayName": "Project Preset",
+            "description": "Builds the binaries",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_CXX_STANDARD": "20",
+                "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install"
+            }
+        },
+        {
+            "name": "testing",
+            "displayName": "TEST PRESET",
+            "binaryDir": "${sourceDir}/test",
+            "cacheVariables": {
+                "TESTING_MODE": "ON",
+                "CMAKE_CXX_STANDARD": "20",
+                "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        }
+    ]
+}
